@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Verdad o Reto - Adultos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      color: #f3f3f3;
+      background: #0b0b0f;
+      background-image:
+        linear-gradient(120deg, rgba(176,28,76,0.15) 10%, rgba(42,17,51,0.7) 40%, rgba(0,0,0,0.88) 100%),
+        url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80');
+      background-size: cover, cover;
+      background-blend-mode: overlay;
+      background-attachment: fixed;
+      text-align: center;
+      padding: 40px 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+    .bg-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(ellipse at 70% 20%, #e81c4f55 0%, transparent 50%),
+                  radial-gradient(ellipse at 25% 80%, #ffc85722 0%, transparent 60%),
+                  radial-gradient(ellipse at 50% 50%, #000 60%, transparent 100%);
+      opacity: 0.75;
+      animation: bgmove 20s infinite alternate linear;
+    }
+    @keyframes bgmove {
+      0% { background-position: 70% 20%, 25% 80%, 50% 50%;}
+      100% { background-position: 65% 25%, 30% 75%, 48% 52%;}
+    }
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+      margin: 48px auto 0 auto;
+      background: rgba(25, 10, 20, 0.96);
+      border-radius: 22px;
+      box-shadow: 0 10px 40px 0 rgba(200,30,70,0.18), 0 2px 16px 0 rgba(0,0,0,0.35);
+      padding: 38px 28px 42px 28px;
+      border: 2px solid #e81c4f55;
+    }
+    h1 {
+      font-size: 2.2em;
+      margin-bottom: 10px;
+      letter-spacing: 1.2px;
+      font-weight: 900;
+      background: linear-gradient(180deg, #ff416c 30%, #e81c4f 60%, #2b2233 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 30px #e81c4f90);
+      opacity: 1;
+      text-shadow:
+        0 1px 0 #e81c4f,
+        0 2px 2px #e81c4fbb,
+        0 8px 12px #e81c4f99,
+        0 12px 18px #2b223388,
+        0 20px 18px #2b223388;
+    }
+    .desc {
+      color: #ffc857;
+      font-size: 1.1em;
+      margin-bottom: 30px;
+      text-shadow: 0 1px 6px #0009;
+    }
+    label, .jugadores label {
+      color: #ffc857;
+      font-size: 1em;
+      margin: 0.5em 0;
+      display: block;
+    }
+    select, button, input[type="text"] {
+      font-family: inherit;
+      font-size: 1.1em;
+      padding: 11px 16px;
+      margin: 10px 8px 10px 8px;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      background: #21101a;
+      color: #ffe4d5;
+      box-shadow: 0 1px 10px rgba(100,0,40,0.08);
+      transition: background 0.25s, color 0.25s, box-shadow 0.3s;
+      box-sizing: border-box;
+    }
+    select:focus, button:focus, input[type="text"]:focus {
+      box-shadow: 0 0 0 2px #e81c4f80;
+    }
+    button {
+      background: linear-gradient(90deg, #e81c4f 0%, #111 100%);
+      color: #ffe4d5;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      margin-top: 12px;
+      text-shadow: 0 1px 8px #0006;
+      border: 2px solid #e81c4f77;
+      box-shadow: 0 1px 16px #e81c4f33;
+      min-width: 120px;
+    }
+    button:hover, button.selected {
+      background: #fff;
+      color: #e81c4f;
+      border-color: #fff;
+      box-shadow: 0 0 16px #fc518e88, 0 0 2px #fff;
+      filter: brightness(1.08);
+    }
+    .botones {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .jugadores {
+      margin-bottom: 30px;
+      background: rgba(30,10,25,0.7);
+      border-radius: 16px;
+      padding: 18px 10px 10px 10px;
+      box-shadow: 0 2px 8px #e81c4f18;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .jugadores-lista {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin: 3px 0 3px 0;
+    }
+    .jugador-tag {
+      padding: 4px 10px;
+      border-radius: 7px;
+      background: #e81c4f;
+      color: #fff;
+      font-size: 1em;
+      margin: 2px 2px 2px 0;
+      box-shadow: 0 0 4px #fff4, 0 1px 3px #e81c4f33;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .turno-indicador {
+      margin-bottom: 16px;
+      font-size: 1.2em;
+      color: #ffc857;
+      font-weight: bold;
+      text-shadow: 0 2px 8px #0009;
+      letter-spacing: 0.06em;
+      min-height: 1.7em;
+    }
+    .resultado {
+      margin-top: 36px;
+      font-size: 1.5em;
+      background: rgba(30, 10, 25, 0.90);
+      padding: 30px 18px 20px 18px;
+      border-radius: 17px;
+      min-height: 80px;
+      max-width: 95%;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 2px 22px #e81c4f30, 0 2px 12px #000a;
+      border: 1.5px solid #e81c4f44;
+      transition: background 0.3s;
+      word-break: break-word;
+      font-family: inherit;
+      min-height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      flex-direction: row;
+      position: relative;
+      perspective: 800px;
+      min-height: 120px;
+    }
+    .flipIn {
+      display: inline-block;
+      opacity: 0;
+      margin-right: 3px;
+      animation: flipIn 0.7s cubic-bezier(.5,1.6,.4,1) forwards;
+      will-change: transform, opacity;
+    }
+    @keyframes flipIn {
+      from {
+        opacity: 0;
+        transform: rotateY(90deg) scale(0.6);
+      }
+      60% {
+        opacity: 1;
+        transform: rotateY(-20deg) scale(1.07);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+    .mini-action {
+      position: absolute;
+      bottom: 10px;
+      right: 16px;
+      font-size: 0.85em;
+      color: #ffc857;
+      background: #111a;
+      padding: 2px 8px;
+      border-radius: 7px;
+      font-weight: bold;
+      box-shadow: 0 1px 3px #ffc85744;
+      letter-spacing: 0.04em;
+      user-select: none;
+      pointer-events: none;
+      opacity: 0.92;
+    }
+    .cumplio-btns {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 16px;
+      margin-bottom: -10px;
+    }
+    .cumplio-btns button {
+      background: #ffc857;
+      color: #e81c4f;
+      border: 2px solid #ffc857;
+      min-width: 80px;
+      font-size: 1.1em;
+      font-weight: bold;
+      border-radius: 12px;
+      margin: 0 8px;
+      box-shadow: 0 2px 10px #ffc85744;
+      transition: background 0.23s, color 0.23s;
+    }
+    .cumplio-btns button:hover {
+      background: #e81c4f;
+      color: #fff;
+      border-color: #e81c4f;
+    }
+    .shot-msg {
+      color: #ffc857;
+      background: #e81c4f;
+      font-size: 1.15em;
+      font-weight: bold;
+      padding: 14px 18px;
+      border-radius: 12px;
+      margin: 16px auto 0 auto;
+      display: inline-block;
+      box-shadow: 0 2px 10px #e81c4f44;
+      animation: fadein 1s;
+      letter-spacing: 0.04em;
+    }
+    #mayor18-modal-bg {
+      position: fixed;
+      z-index: 9999;
+      left: 0; top: 0; right: 0; bottom: 0;
+      background: rgba(20,10,30,0.97);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s;
+    }
+    #mayor18-modal {
+      background: #1a0a18;
+      padding: 38px 22px 28px 22px;
+      border-radius: 18px;
+      box-shadow: 0 6px 32px #e81c4f90;
+      border: 2px solid #e81c4f88;
+      max-width: 92vw;
+      width: 350px;
+      color: #ffc857;
+      text-align: center;
+      font-size: 1.15em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #mayor18-modal h2 {
+      color: #e81c4f;
+      font-size: 1.4em;
+      margin-bottom: 12px;
+      margin-top: 0;
+      font-weight: bold;
+      text-shadow: 0 1px 12px #e81c4fa9;
+    }
+    #mayor18-modal button {
+      margin-top: 16px;
+      background: #e81c4f;
+      color: #fff;
+      border: 2px solid #ffc857;
+      font-size: 1.12em;
+      font-weight: bold;
+      padding: 8px 34px;
+      border-radius: 11px;
+      box-shadow: 0 2px 10px #e81c4f44;
+    }
+    #mayor18-modal button:hover {
+      background: #ffc857;
+      color: #e81c4f;
+      border-color: #e81c4f;
+    }
+    @media (max-width: 700px) {
+      .container {
+        max-width: 98vw;
+        padding: 16px 2vw 24px 2vw;
+        margin: 8vw 0 0 0;
+      }
+      .resultado {
+        font-size: 1.09em;
+        padding: 16px 5px;
+      }
+      .botones {
+        gap: 10px;
+      }
+      h1 {
+        font-size: 1.3em;
+      }
+      input[type="text"] {
+        width: 85vw;
+        max-width: 300px;
+      }
+    }
+    @media (max-width: 480px) {
+      .container {
+        max-width: 99vw;
+        padding: 6vw 2vw 10vw 2vw;
+        border-radius: 14px;
+      }
+      .resultado {
+        font-size: 0.97em;
+        padding: 7vw 3vw;
+        min-height: 50px;
+      }
+      .botones {
+        flex-direction: column;
+        gap: 8px;
+      }
+      h1 {
+        font-size: 1em;
+      }
+      input[type="text"] {
+        width: 96vw;
+        max-width: 96vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-overlay"></div>
+  <!-- Modal de mayoría de edad -->
+  <div id="mayor18-modal-bg">
+    <div id="mayor18-modal">
+      <h2>¿Eres mayor de 17 años?</h2>
+      <div>
+        Este juego es para adultos. Si tienes menos de 18 años, por favor no continúes.<br>
+        <b>¿Eres mayor de edad?</b>
+      </div>
+      <button onclick="mayor18(true)">SÍ, SOY MAYOR DE 17</button>
+      <button onclick="mayor18(false)" style="background:#ffc857;color:#e81c4f;">NO, SALIR</button>
+    </div>
+  </div>
+  <div class="container" id="main-content" style="filter:blur(3px);pointer-events:none;">
+    <h1>🔥 Los Mandamientos de Felipe 🔥</h1>
+    <div class="desc">🔥 Del Cielo al Infierno… tú decides qué tan sucio se pone el juego. ¿Le entras 😏 o te rajas?</div>
+    <div class="jugadores" id="jugadores-section">
+      <label for="jugador-nombre">Agregar jugadores (mínimo 2, máximo 12):</label>
+      <form onsubmit="agregarJugador(); return false;">
+        <input id="jugador-nombre" type="text" maxlength="20" placeholder="Nombre del jugador..." autocomplete="off">
+        <button type="submit">Agregar</button>
+        <button type="button" onclick="iniciarJuego()" style="background:#ffc857;color:#e81c4f;border:2px solid #ffc857;">¡Iniciar!</button>
+      </form>
+      <div class="jugadores-lista" id="jugadores-lista"></div>
+      <div id="jugadores-errores" style="color:#ffc857; font-size:0.97em; margin-top:3px;"></div>
+    </div>
+    <div id="juego-section" style="display:none;">
+      <div class="turno-indicador" id="turno-indicador"></div>
+      <label for="fase">Fase:</label>
+      <select id="fase" onchange="cambiarFase()">
+        <option value="cielo">💫 CIELO – Juega Suave, Pero Rico</option>
+        <option value="tierra">🔥 TIERRA – Ya Tú Sabes lo que Viene</option>
+        <option value="infierno" selected>😈 INFIERNO – Pa’ los que No Le Tiemblan las Piernas</option>
+      </select>
+      <div class="botones">
+        <button id="btn-verdad" onclick="mostrar('verdad')">VERDAD 😇</button>
+        <button id="btn-reto" onclick="mostrar('reto')">RETO 😈 </button>
+        <button onclick="siguienteTurno()" style="background:#ffc857;color:#e81c4f;border:2px solid #ffc857;">Siguiente turno</button>
+      </div>
+      <div id="resultado" class="resultado"></div>
+      <div class="cumplio-btns" id="cumplio-btns" style="display:none;">
+        <button onclick="cumplio(true)">Cumplió</button>
+        <button onclick="cumplio(false)">No cumplió</button>
+      </div>
+      <div id="shot-msg"></div>
+    </div>
+    <audio id="sonido-pop" src="https://cdn.pixabay.com/audio/2022/07/26/audio_124bfa71c3.mp3"></audio>
+    <audio id="sonido-reto" src="https://cdn.pixabay.com/audio/2022/07/26/audio_124bfa71c3.mp3"></audio>
+  </div>
+  <script>
+    // MODAL mayoría de edad
+    function mayor18(resp) {
+      if(resp) {
+        document.getElementById("mayor18-modal-bg").style.display = "none";
+        document.getElementById("main-content").style.filter = "";
+        document.getElementById("main-content").style.pointerEvents = "";
+      } else {
+        document.getElementById("mayor18-modal-bg").innerHTML = "<div id='mayor18-modal'><h2>¡Hasta luego!</h2><div>No puedes jugar este juego. 😔</div></div>";
+        document.body.style.overflow = "hidden";
+      }
+    }
+
+    // FRASES
+    const frases = {
+      // ... (igual que antes, no se repite aquí para ahorrar espacio) ...
+      cielo: {
+        verdad: [
+          "¿Cuál es tu apodo más raro?",
+          "¿Has llorado por amor?",
+          "¿Qué persona te parece linda aquí?",
+          "¿Cuál fue tu primer amor de colegio?",
+          "¿Te has enamorado de alguien que no te corresponde?",
+          "¿Alguna vez has mentido para evitar un castigo?",
+          "¿Qué es lo más tierno que has hecho por alguien?",
+          "¿Tienes un amor platónico?",
+          "¿Cuál es tu secreto más gracioso?",
+          "¿Has tenido un sueño raro con alguien de este grupo?",
+          "¿Te han rechazado en público?",
+          "¿Cuál es tu mayor miedo amoroso?",
+          "¿Cuál fue tu primera decepción?",
+          "¿Cuál es tu mayor inseguridad?",
+          "¿Tienes alguna carta de amor guardada?",
+          "¿Quién fue tu primer beso?",
+          "¿Te han dedicado una canción?",
+          "¿Le has escrito una carta a alguien?",
+          "¿Has sentido mariposas por alguien aquí?",
+          "¿Te han dejado en visto y te dolió?",
+          "¿Has fingido reírte para agradar?",
+          "¿Qué te hace sentir más vergüenza?",
+          "¿Te han dicho que eres lindo o linda hoy?",
+          "¿A quién de este grupo abrazarías ahora mismo?",
+          "¿Te gustaría estar en una relación ahora?",
+          "¿Cuál fue tu último 'crush' famoso?",
+          "¿Te gustaría revivir tu primer amor?",
+          "¿A quién de este grupo confiarías un secreto?",
+          "¿Tienes un peluche o regalo sentimental?",
+          "¿Has escrito poemas o canciones por amor?",
+          "¿Has llorado viendo una película romántica?",
+          "¿A quién de tu infancia extrañas más?",
+          "¿Qué lugar te trae recuerdos bonitos?",
+          "¿Has escondido sentimientos por miedo?",
+          "¿Eres celoso(a)?",
+          "¿Perdonarías una infidelidad?",
+          "¿Tienes una frase que te represente?",
+          "¿Crees en el amor a primera vista?",
+          "¿Alguna vez te han dedicado una serenata?"
+        ],
+        reto: [
+          "Canta tu canción favorita como si fueras reguetonero.",
+          "Haz una pose de modelo y sosténla 10 segundos.",
+          "Imita a alguien del grupo durante 30 segundos.",
+          "Dibuja un corazón en tu mejilla con tu dedo.",
+          "Haz una historia falsa como si fueras influencer.",
+          "Dinos algo positivo de la persona a tu izquierda.",
+          "Haz una declaración de amor falsa a alguien del grupo.",
+          "Di tu segundo nombre completo con orgullo.",
+          "Haz 5 sonidos de animales distintos.",
+          "Baila el 'serrucho' por 10 segundos.",
+          "Actúa como si estuvieras conociendo a tu ídolo.",
+          "Declara tu amor a una botella de agua.",
+          "Dile a tu zapato cuánto lo quieres.",
+          "Camina como Miss Universo por 10 segundos.",
+          "Di una frase de novela dramática.",
+          "Haz un comercial de lo que tengas en la mano.",
+          "Habla como un robot por 1 minuto.",
+          "Haz mímica de tu película favorita.",
+          "Ladra 5 veces y di 'soy adorable'.",
+          "Haz como si lloraras por amor.",
+          "Declara amor eterno a una silla.",
+          "Dibuja en el aire tu nombre con el cuerpo.",
+          "Lánzale un piropo divertido a alguien.",
+          "Haz una coreografía improvisada.",
+          "Haz como si estuvieras en una cita incómoda.",
+          "Invita a alguien a salir como si tuvieras 10 años.",
+          "Salta como sapo 3 veces diciendo 'te amo'.",
+          "Habla con acento costeño por 1 minuto.",
+          "Haz como si fueras un gallo enamorado.",
+          "Baila pegado a la pared 10 segundos.",
+          "Haz una propuesta de matrimonio falsa.",
+          "Haz como si fueras un presentador de noticias.",
+          "Cuenta una historia triste exageradamente.",
+          "Imita a un gato celoso.",
+          "Lee una frase como si estuvieras llorando.",
+          "Hazle un brindis al aire.",
+          "Camina como si usaras tacones.",
+          "Di un trabalenguas sin equivocarte.",
+          "Declara amor a tu comida favorita."
+        ]
+      },
+      tierra: {
+        verdad: [
+          "¿Con cuántas personas te has besado?",
+          "¿Te han pillado en una situación comprometedora?",
+          "¿Has enviado fotos subidas de tono?",
+          "¿Tendrías algo con alguien de este grupo?",
+          "¿Has tenido sexo en un lugar público?",
+          "¿Qué parte de tu cuerpo te gusta más?",
+          "¿Has sido infiel o te han sido infiel?",
+          "¿Te ha gustado el novio o novia de un amigo?",
+          "¿Tienes un juguete sexual?",
+          "¿Has sentido celos fuertes por alguien?",
+          "¿Te han rechazado en la cama?",
+          "¿Te han dicho que besas mal?",
+          "¿Has tenido un rapidito?",
+          "¿Te ha gustado tu profesor o profesora?",
+          "¿Te han enviado un nude sin pedirlo?",
+          "¿Alguna vez ligaste por redes sociales?",
+          "¿Tendrías un 'amigo con derechos'?",
+          "¿Te arrepientes de alguna aventura?",
+          "¿Te han hecho llorar en la intimidad?",
+          "¿Alguna vez te han engañado?",
+          "¿Has tocado a alguien sin querer en un momento incómodo?",
+          "¿Te ha gustado alguien del mismo sexo?",
+          "¿Tienes fotos comprometedoras aún guardadas?",
+          "¿Has salido con alguien por interés?",
+          "¿Has sentido culpa después de un encuentro íntimo?",
+          "¿Qué fue lo más loco que hiciste por amor?",
+          "¿Has fantaseado con un amigo o amiga?",
+          "¿Te han grabado en un momento íntimo?",
+          "¿Cuál es tu tipo de persona ideal?",
+          "¿Has usado una app de citas?",
+          "¿Alguna vez hiciste sexting?",
+          "¿Has tenido una aventura en la universidad o trabajo?",
+          "¿Te gustaría volver con tu ex?",
+          "¿Te han sido infiel más de una vez?",
+          "¿Te excita alguien de tu entorno cercano?",
+          "¿Has tenido una cita que terminó mal?",
+          "¿Qué parte del cuerpo miras primero?",
+          "¿Qué tan abierta es tu mente en la cama?",
+          "¿Te han hecho una propuesta indecente?"
+        ],
+        reto: [
+          "Besa en la mejilla a alguien del grupo.",
+          "Baila encima de una silla como si estuvieras en una disco.",
+          "Haz una confesión caliente al oído de alguien.",
+          "Manda un emoji picante a tu contacto más reciente.",
+          "Hazle un masaje sensual (de 10 seg) a alguien del grupo.",
+          "Describe tu fantasía más atrevida (sin filtros).",
+          "Actúa como si estuvieras en una escena de novela pasional.",
+          "Haz twerking durante 10 segundos.",
+          "Imita a alguien teniendo un orgasmo.",
+          "Tócate el cuello lentamente como si te sedujeras.",
+          "Simula besar a alguien sin tocarlo.",
+          "Haz como si le susurraras a alguien algo muy íntimo.",
+          "Pasa tu dedo por tus labios como si coquetearas.",
+          "Haz una escena de celos exagerada.",
+          "Baila en pareja con la persona que el grupo elija.",
+          "Hazle un cumplido sexy a alguien del grupo.",
+          "Haz una mirada seductora y sosténla 5 segundos.",
+          "Haz una escena de película erótica sin sonido.",
+          "Haz contacto visual con alguien durante 15 segundos sin reírte.",
+          "Dibuja un corazón con tu lengua en el aire.",
+          "Hazle un baile lento a alguien.",
+          "Llama a alguien y dile que soñaste algo candente con él o ella.",
+          "Haz una escena falsa de celos frente a todos.",
+          "Susurra una frase hot a alguien del grupo.",
+          "Haz un reto con los ojos vendados (elige uno).",
+          "Haz que alguien elija dónde tocarte (con consentimiento).",
+          "Describe cómo besarías a alguien aquí.",
+          "Haz que alguien te dé un piropo subido de tono.",
+          "Sopla lentamente sobre el cuello de alguien.",
+          "Haz un mini striptease (sin quitarte ropa interior).",
+          "Haz una escena de amor prohibido con alguien.",
+          "Baila con alguien como si fuera tu crush.",
+          "Léele una frase caliente a alguien.",
+          "Haz que alguien te hable al oído lo que quiera.",
+          "Haz una escena de despedida como si fuera tu ex.",
+          "Haz una declaración de amor apasionada a una botella.",
+          "Cierra los ojos y que alguien te dé un beso sorpresa.",
+          "Actúa como si estuvieras celoso por 30 segundos.",
+          "Haz una escena de novela costeña con pasión."
+        ]
+      },
+      infierno: {
+        verdad: [
+          "¿Has tenido sexo casual sin arrepentirte?",
+          "¿Te han hecho un oral que no te gustó?",
+          "¿Cuál es tu lugar favorito para que te besen?",
+          "¿Has hecho tríos o te gustaría?",
+          "¿Has tenido una aventura con alguien comprometido?",
+          "¿Te excita alguien de este grupo? ¿Quién?",
+          "¿Cuál ha sido tu experiencia sexual más salvaje?",
+          "¿Has enviado nudes este mes?",
+          "¿Tendrías sexo en la playa si pudieras?",
+          "¿Has sentido deseo por alguien prohibido?",
+          "¿Cuál es tu posición favorita? ¿Por qué?",
+          "¿Te han amarrado o tú lo has hecho?",
+          "¿Has usado comida en el sexo?",
+          "¿Tienes alguna fantasía pendiente con alguien aquí?",
+          "¿Has fingido un orgasmo? ¿Por qué?",
+          "¿Te gusta que te hablen sucio? ¿Qué te excita?",
+          "¿Has tenido sexo con hielo o algo similar?",
+          "¿Te han grabado sin saberlo?",
+          "¿Has pensado en besar a alguien aquí esta noche?",
+          "¿Te atreverías a un juego de roles extremos?",
+          "¿Has tenido sexo en el baño?",
+          "¿Has tenido un sueño erótico con alguien aquí?",
+          "¿Has usado juguetes en pareja?",
+          "¿Te gustaría ver a alguien de aquí desnudo?",
+          "¿Has sido infiel más de una vez?",
+          "¿Tendrías sexo sin compromiso esta noche?",
+          "¿Tienes fantasías con alguien prohibido?",
+          "¿Cuál fue tu experiencia más caliente?",
+          "¿Te gusta el sexo duro o suave?",
+          "¿Has tenido sexo en una fiesta?",
+          "¿Has recibido sexo oral en un lugar público?",
+          "¿Has besado a más de 3 personas en un mismo día?",
+          "¿Alguna vez tuviste una experiencia con alguien del mismo sexo?",
+          "¿Te gustaría que te dominen?",
+          "¿Cuál es tu mayor secreto íntimo?",
+          "¿Te excita hablar de sexo en público?",
+          "¿Cuál es el mejor lugar donde has tenido sexo?",
+          "¿Has grabado un video íntimo?",
+          "¿Tienes fantasías con celebridades? ¿Quién?",
+          "¿Has besado el cuerpo de alguien completo sin tener sexo?",
+          "¿Te excita que te laman el abdomen o los muslos?",
+          "¿Has jugado con hielo durante el sexo o mientras besabas?",
+          "¿Te ha dado morbo besar a alguien con pareja?",
+          "¿Qué parte del cuerpo de alguien aquí besarías sin pensarlo?",
+          "¿Te han besado tan lento que te pusiste a temblar?",
+          "¿Cuál fue el beso que te dejó pensando por días?",
+          "¿Has probado lamer crema, miel o chocolate del cuerpo de alguien?",
+          "¿Con qué parte del cuerpo te gusta jugar antes de besar?",
+          "¿Te has calentado solo por un beso en el abdomen o espalda?"
+        ],
+        reto: [
+          "Dale un beso de 15 segundos en el cuello a alguien.",
+          "Besa a alguien en el abdomen con un hielo.",
+          "Simula una escena de seducción como en una película XXX.",
+          "Baila sensualmente encima de alguien por 20 segundos.",
+          "Haz un striptease sin quitarte toda la ropa.",
+          "Dile algo sucio al oído de alguien y que lo repita.",
+          "Métete al baño con alguien por 30 segundos (con ropa).",
+          "Pasa un hielo por el cuerpo de alguien lentamente.",
+          "Hazle un beso francés a alguien (si acepta).",
+          "Haz un gemido que parezca real.",
+          "Besa la parte que te pidan (no íntima).",
+          "Haz un baile tipo perreo al suelo (sin pena).",
+          "Hazle un 'lap dance' a alguien.",
+          "Haz una pose sexual sobre una almohada.",
+          "Intercambia prenda con alguien por 1 minuto.",
+          "Deja que alguien te dé un beso donde quiera (no íntimo).",
+          "Besa el cuello de la persona a tu derecha.",
+          "Sopla al oído de alguien lentamente.",
+          "Haz una mordida juguetona a alguien (si acepta).",
+          "Haz que alguien te dé un beso de 10 segundos donde quiera (ropa puesta).",
+          "Baila con alguien al ritmo de una canción sexy.",
+          "Haz una escena de celos tóxicos (actuado).",
+          "Tócate el cuerpo como si estuvieras en una escena caliente.",
+          "Simula tener un encuentro pasional en cámara lenta.",
+          "Haz una escena falsa de despedida apasionada.",
+          "Mira a alguien como si lo desearas intensamente.",
+          "Haz una historia caliente como si fueras influencer.",
+          "Haz contacto físico leve mientras haces una confesión hot.",
+          "Haz un baile de reggaetón frente al grupo.",
+          "Deja que alguien te dé una orden atrevida (consentida).",
+          "Dale un beso de 15 segundos a la persona que escoja los participantes",
+          "Enciérrate en el baño con alguien durante 30 segundos, sin cámaras, sin decir qué pasó (solo ustedes sabrán)",
+          "Escoge a alguien y métanse en un cuarto solos por un minuto. Salen cuando estén listos",
+          "Llévate a alguien al baño y susúrrale lo más sucio que te gustaría hacerle",
+          "Métete con alguien en un cuarto y sal solo cuando se hayan besado o tocado algo",
+          "Cierra la puerta, apaga la luz y quédate abrazado/a con alguien por 30 segundos",
+          "Haz un 'beso secreto': entra con alguien a un espacio cerrado, bésense en lo que quieran y salgan sin contar nada",
+          "Tócate frente a alguien (por encima de la ropa) durante 15 segundos encerrados a solas",
+          "Entra a un baño con alguien, siéntate en sus piernas y haz que se caliente la cosa (con ropa)",
+          "Pide a alguien que te encierre contigo y te dé un beso donde tú le digas",
+          "Escoge una persona, métanse en una habitación y simulen una escena de seducción sin hablar",
+          "Toma un cubito de hielo y da un beso lento en el abdomen de alguien, dejando que se derrita",
+          "Simula cómo besarías el cuerpo de alguien de la cabeza a los pies (sin tocar realmente)",
+          "Lame el cuello de alguien durante 5 segundos mientras lo abrazas por detrás",
+          "Da un beso largo en el muslo de alguien (si se atreve)",
+          "Besa los labios de alguien mientras ambos se agarran la cintura",
+          "Coloca un hielo en tu boca y pásalo al cuerpo de alguien sin manos",
+          "Haz una 'línea de besos': da 3 besos pequeños en cuello, abdomen y pecho de alguien",
+          "Imita un 'beso de lengua' al aire, pero con gemidos",
+          "Besa el ombligo de alguien con un cubito de hielo, mientras lo miras",
+          "Besa a alguien mientras lo tienes sentado/a sobre tus piernas",
+          "Juega al 'stop': tú y otra persona se besan hasta que alguien diga 'basta'",
+          "Da un beso en la parte del cuerpo que la otra persona te diga (si acepta)",
+          "Sube una historia con alguien donde parezcan que se están besando apasionadamente (puede ser actuado)",
+          "Simula que estás en una escena erótica con besos incluidos, durante 15 segundos",
+          "Besa a alguien de espaldas, desde la nuca hasta la parte baja, sin tocar con las manos",
+          "Confiesa en voz alta qué es lo más enfermo que te excita.",
+          "Besa en la boca a alguien que esté comprometido (o simúlalo si no hay nadie).",
+          "Di cuántos cuerpos te has comido este año, sin mentir.",
+          "Acércate al oído de alguien y dile si alguna vez te ha dado ganas de tener sexo con esa persona.",
+          "Cuenta una vez que lloraste en la cama, ya sea de placer o por otra cosa.",
+          "Di en voz alta cuánto duras haciendo el amor, con orgullo.",
+          "Confiesa si alguna vez te grabaron teniendo sexo sin tu permiso y cómo reaccionaste.",
+          "Recrea (o narra) cómo te hicieron un oral en un lugar público.",
+          "Mira a alguien del grupo y pregúntale si quiere ver porno contigo ahora.",
+          "Describe sin censura un video tuyo que nadie debería ver.",
+          "Escoge a dos personas del grupo con quienes harías un trío y dile por qué.",
+          "Actúa como si estuvieras pagando o cobrando por sexo por 10 segundos.",
+          "Haz 20 segundos de 'dirty talk' como lo harías en la cama.",
+          "Muestra con tu cuerpo qué parte del cuerpo te obsesiona.",
+          "Confiesa si alguien de tu mismo sexo te ha hecho fantasear y cuéntalo con detalles.",
+          "Narra con detalle una vez que tuviste sexo en un lugar peligroso.",
+          "Confiesa cuánto tiempo aguantas sin tocarte ni ver porno.",
+          "Haz una escena simulando el uso de esposas, vendas o látigos.",
+          "Di en voz alta qué no harías nunca en la cama, aunque te lo pidan.",
+          "Cuenta si alguna vez has compartido pareja o estado en una relación abierta.",
+          "Muestra tu límite en la cama con un gesto o palabra clave.",
+          "Haz como si hicieras un show en vivo por 10 segundos.",
+          "Confiesa una vez que te sentiste culpable por lo que hiciste en la cama.",
+          "Haz una escena sexy de 10 segundos siendo mirado o mirando.",
+          "Di con cuántas personas te gustaría estar al mismo tiempo, sin miedo.",
+          "Escoge a alguien y dile cómo crees que lo hace rico en la cama.",
+          "Actúa como si tu ex te pidiera solo sexo, ¿qué le dirías?",
+          "Cuenta la historia más intensa donde tuviste sexo por venganza.",
+          "Describe una fantasía sexual que aún no has cumplido.",
+          "Haz un brindis por tener una doble vida sexual sin que te descubran."
+        ]
+      }
+    };
+
+    // JUGADORES Y TURNOS
+    let jugadores = [];
+    let turnoActual = -1;
+    let ronda = [];
+
+    function agregarJugador() {
+      const input = document.getElementById('jugador-nombre');
+      const nombre = input.value.trim();
+      const errores = document.getElementById('jugadores-errores');
+      if (!nombre) {
+        errores.innerText = "Ingresa un nombre.";
+        return;
+      }
+      if (jugadores.length >= 12) {
+        errores.innerText = "Máximo 12 jugadores.";
+        return;
+      }
+      if (jugadores.includes(nombre)) {
+        errores.innerText = "Ese nombre ya está en la lista.";
+        return;
+      }
+      jugadores.push(nombre);
+      input.value = "";
+      errores.innerText = "";
+      renderizarJugadores();
+    }
+
+    function eliminarJugador(nombre) {
+      jugadores = jugadores.filter(j => j !== nombre);
+      renderizarJugadores();
+    }
+
+    function renderizarJugadores() {
+      const lista = document.getElementById('jugadores-lista');
+      lista.innerHTML = "";
+      jugadores.forEach(j => {
+        const span = document.createElement("span");
+        span.className = "jugador-tag";
+        span.textContent = j;
+        span.title = "Quitar";
+        span.onclick = () => eliminarJugador(j);
+        lista.appendChild(span);
+      });
+    }
+
+    function iniciarJuego() {
+      const errores = document.getElementById('jugadores-errores');
+      if (jugadores.length < 2) {
+        errores.innerText = "¡Debes agregar al menos 2 jugadores!";
+        return;
+      }
+      errores.innerText = "";
+      document.getElementById('jugadores-section').style.display = 'none';
+      document.getElementById('juego-section').style.display = '';
+      turnoActual = -1;
+      ronda = [];
+      siguienteTurno();
+    }
+
+    function siguienteTurno() {
+      if (jugadores.length < 2) return;
+      if (ronda.length === 0) {
+        ronda = jugadores.map((_,i)=>i);
+        for (let i = ronda.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [ronda[i], ronda[j]] = [ronda[j], ronda[i]];
+        }
+      }
+      turnoActual = ronda.shift();
+      mostrarTurno();
+      document.getElementById("resultado").innerHTML = "";
+      document.getElementById("cumplio-btns").style.display = "none";
+      document.getElementById("shot-msg").innerHTML = "";
+      setActiveButton(null);
+    }
+
+    function mostrarTurno() {
+      const nombre = jugadores[turnoActual];
+      document.getElementById("turno-indicador").innerHTML = `Turno de: <span style="color:#fff;background:#e81c4f;padding:4px 12px;border-radius:6px;">${nombre}</span>`;
+    }
+
+    function setActiveButton(tipo) {
+      document.getElementById('btn-verdad').classList.remove('selected');
+      document.getElementById('btn-reto').classList.remove('selected');
+      if(tipo === 'verdad') document.getElementById('btn-verdad').classList.add('selected');
+      if(tipo === 'reto') document.getElementById('btn-reto').classList.add('selected');
+    }
+
+    function playSound(tipo) {
+      let soundId = tipo === "verdad" ? "sonido-pop" : "sonido-reto";
+      const audio = document.getElementById(soundId);
+      if(audio) {
+        audio.currentTime = 0;
+        audio.play();
+      }
+    }
+
+    function cambiarFase() {
+      document.getElementById("resultado").innerText = "";
+      document.getElementById("cumplio-btns").style.display = "none";
+      document.getElementById("shot-msg").innerHTML = "";
+      setActiveButton(null);
+    }
+
+    function mostrar(tipo) {
+      if (turnoActual === -1) return;
+      const fase = document.getElementById("fase").value;
+      const lista = frases[fase][tipo];
+      const seleccion = lista[Math.floor(Math.random() * lista.length)];
+      const resultadoDiv = document.getElementById("resultado");
+      resultadoDiv.innerHTML = "";
+      setActiveButton(tipo);
+      playSound(tipo);
+
+      // Efecto: cada palabra "flipa"
+      const palabras = seleccion.split(" ");
+      palabras.forEach((palabra, idx) => {
+        const span = document.createElement("span");
+        span.textContent = palabra + " ";
+        span.className = "flipIn";
+        span.style.display = "inline-block";
+        span.style.animationDelay = (idx*0.08) + "s";
+        resultadoDiv.appendChild(span);
+      });
+
+      // Acción mínima (cumple/shoot)
+      let accionMini = document.createElement("span");
+      accionMini.className = "mini-action";
+      accionMini.textContent = tipo === "verdad" ? "cumple" : "shoot";
+      resultadoDiv.appendChild(accionMini);
+
+      // Mostrar botones de Cumplió/No cumplió
+      document.getElementById("cumplio-btns").style.display = "flex";
+      document.getElementById("shot-msg").innerHTML = "";
+    }
+
+    function cumplio(exito) {
+      document.getElementById("cumplio-btns").style.display = "none";
+      if(exito) {
+        document.getElementById("shot-msg").innerHTML = "<div class='shot-msg'>¡Felicidades! Siguiente turno 👉</div>";
+      } else {
+        document.getElementById("shot-msg").innerHTML = "<div class='shot-msg'>¡No cumpliste! ¡Toma un shot! 🥃</div>";
+      }
+    }
+  </script>
+</body>
+</html>
